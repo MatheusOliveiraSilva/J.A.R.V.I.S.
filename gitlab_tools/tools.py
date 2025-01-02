@@ -38,6 +38,10 @@ def issue_spent_time(issue_id: int, spent_time: str) -> str:
         spent_time (str): Tempo gasto na issue
     """
 
+    # Faz um assert para verificar se está no formato contendo apenas d h m além dos digitos de 0 a 9.
+    if not all(c.isdigit() or c == "d" or c == "h" or c == "m" for c in spent_time):
+        raise ValueError("O tempo gasto deve estar no formato contendo apenas d h m e os digitos de 0 a 9.")
+
     issue = PROJECT.issues.get(issue_id)
     issue.add_spent_time(spent_time)
 
