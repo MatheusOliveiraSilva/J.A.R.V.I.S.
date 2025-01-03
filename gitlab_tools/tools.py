@@ -1,7 +1,9 @@
 import os
 import gitlab
+from typing import Literal
 from dotenv import load_dotenv
 from llm_utils.langchain_utils import get_llm
+from gitlab_tools.people_info import PEOPLE_INFO
 
 env_path = "../.env"
 
@@ -19,6 +21,9 @@ def get_opened_issues() -> str:
     issues = PROJECT.issues.list(state="opened", all=True)
 
     relatorio = "As issues abertas do projeto sao:\n"
+
+    if not issues:
+        return "Nenhuma issue aberta no momento."
 
     for issue in issues:
         relatorio += f"ID da tarefa: {issue.iid}\n"
@@ -49,3 +54,49 @@ def issue_spent_time(issue_id: int, spent_time: str) -> str:
 
     return f"Tempo gasto foi adicionado ao gilab."
 
+def change_assignee(issue_id: int, user_name: str) -> str:
+    """
+    Função que vai ser chamada quando quisermos mudar o assignee da issue.
+    Assignee pode ter como sinonimo o responsavel/dono/owner da issue.
+    Args:
+
+    issue_id (int): ID da issue
+    user_name (str): Nome do usuario
+    """
+
+    issue = PROJECT.issues.get(issue_id)
+
+    if user_name.lower() not in PEOPLE_INFO:
+        raise ValueError(f"O usuario {user_name} nao foi encontrado na base de dados.")
+
+    user_info = PEOPLE_INFO[user_name.lower()][0]
+
+    # Atualizar a issue com os novos assignees
+    issue.assignee_ids = [user_info['id']]
+    issue.save()
+
+    return f"A tarefa foi designada para: {user_name}."
+
+def change_labels(issue_id: int, new_label: Literal["To Do", "Doing", "To Review"]) -> str:
+    """
+    Atualiza o status de uma issue para To Do, Doing ou To Review.
+
+    Args:
+        issue_id (int): ID da issue que terá o label alterado.
+        new_label (Literal["To Do", "Doing", "To Review"]): Novo label que será aplicado à issue.
+
+    """
+    issue = PROJECT.issues.get(issue_id)
+
+    if new_label in issue.labels:
+        raise ValueError(f"A issue {issue_id} ja possui o label {new_label}.")
+
+    # Remove o label atual da issue se for um dos literais exceto o do input
+    for label in issue.labels:
+        if label in ["To Do", "Doing", "To Review"]:
+            issue.labels.remove(label)
+
+    issue.labels.append(new_label)
+    issue.save()
+
+    return f"A tarefa foi designada para: {new_label}."

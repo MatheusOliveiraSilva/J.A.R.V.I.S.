@@ -4,4 +4,6 @@ import gitlab_tools.tools as gl_tools
 TOOLS = [
     gl_tools.get_opened_issues,
     gl_tools.issue_spent_time,
+    gl_tools.change_assignee,
+    gl_tools.change_labels
 ]
