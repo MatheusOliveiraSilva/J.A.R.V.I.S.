@@ -2,13 +2,11 @@ import os
 import gitlab
 from typing import Literal
 from dotenv import load_dotenv
-from llm_utils.langchain_utils import get_llm
 from gitlab_tools.people_info import PEOPLE_INFO
 
 env_path = "../.env"
 
 load_dotenv(dotenv_path=env_path)
-llm = get_llm()
 
 GL = gitlab.Gitlab(url=os.getenv("GITLAB_URL"), private_token=os.getenv("PRIVATE_TOKEN"))
 PROJECT = GL.projects.get(os.getenv("PROJECT_ID"))
