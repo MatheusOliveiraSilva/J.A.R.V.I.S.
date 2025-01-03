@@ -21,8 +21,9 @@ graph = builder.compile(checkpointer=memory)
 
 if __name__ == "__main__":
     messages = [HumanMessage(
-        content="Adicione 1 dia de tempo gasto na issue 44.")
+        content="Muda o dono da task 44 para eduardo")
     ]
+
     result = graph.invoke({"messages": messages}, config)
 
     for message in result["messages"]:
