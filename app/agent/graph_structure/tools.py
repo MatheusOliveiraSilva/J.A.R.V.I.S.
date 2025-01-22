@@ -9,6 +9,8 @@ TOOLS = [
     gl_tools.issue_spent_time,
     gl_tools.change_assignee,
     gl_tools.change_labels,
+
+    # new feature
     open_tools.abrir_ambiente_desenvolvimento,
     open_tools.abrir_playlist_favorita,
     open_tools.abrir_links,

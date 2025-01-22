@@ -48,7 +48,7 @@ def web_search(query: str) -> str:
     search_results = search_tool.invoke(query)
 
     documents_string = f"\n".join([
-        f"Content: {content}\n\nReference URL: {url}" for url, content in search_results
+        f"Content: {result['content']}\n\nReference URL: {result['url']}" for result in search_results
     ])
 
     prompt = SUMMARY_PROMPT.format(
