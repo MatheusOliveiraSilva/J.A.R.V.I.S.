@@ -5,3 +5,17 @@ SpeechRecognition
 fastapi
 uvicorn
 streamlit
+python-gitlab
+python-dotenv
+pandas
+numpy
+pydantic==2.7.4
+langchain_openai
+langchain_community
+faiss-cpu
+langchain_core
+langgraph
+langchain
+tqdm
+oracledb
+langchain-pinecone

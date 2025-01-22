@@ -14,6 +14,7 @@ class GestureProcessor:
         self.mp_draw = mp.solutions.drawing_utils
         self.mac_actions = MacActions()
         self.state = "neutral"  # Estado inicial
+        self.last_z = None  # Última posição z do dedo indicador para detectar cliques
 
     def process_frame(self, frame):
         # Converte o frame para RGB
@@ -37,6 +38,7 @@ class GestureProcessor:
         if self.is_pointing(hand_landmarks):
             self.state = "pointing"
             self.move_mouse(hand_landmarks, frame)
+            self.detect_click(hand_landmarks)
         elif self.is_two_fingers_up(hand_landmarks):
             if self.state == "neutral":
                 print("Estado: Dois dedos levantados")
@@ -86,7 +88,7 @@ class GestureProcessor:
 
     def is_pointing(self, hand_landmarks):
         """
-        Verifica se apenas o dedo indicador está levantado.
+        Verifica se o dedo indicador está levantado, com maior tolerância para inclinações.
         """
         index_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
         middle_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
@@ -98,12 +100,38 @@ class GestureProcessor:
         ring_mcp = hand_landmarks.landmark[self.mp_hands.HandLandmark.RING_FINGER_MCP]
         pinky_mcp = hand_landmarks.landmark[self.mp_hands.HandLandmark.PINKY_MCP]
 
-        return (
-                index_tip.y < index_mcp.y and  # Indicador levantado
-                middle_tip.y > middle_mcp.y and  # Médio abaixado
-                ring_tip.y > ring_mcp.y and  # Anular abaixado
-                pinky_tip.y > pinky_mcp.y  # Mínimo abaixado
+        # Adicionar tolerância ao eixo Y (levemente abaixado ainda é considerado levantado)
+        tolerance_y = 0.05  # Ajuste conforme necessário
+
+        # Verificar se o indicador está levantado em relação à base (com tolerância)
+        is_index_up = index_tip.y < index_mcp.y + tolerance_y
+
+        # Verificar se o indicador está mais elevado que os outros dedos
+        is_above_others = (
+                index_tip.y < middle_tip.y and  # Acima do médio
+                index_tip.y < ring_tip.y and  # Acima do anular
+                index_tip.y < pinky_tip.y  # Acima do mínimo
         )
+
+        # Verificar se o indicador está inclinado para a frente (posição z)
+        is_pointing_forward = index_tip.z < index_mcp.z + 0.1  # Pequena margem para "frente"
+
+        return is_index_up and is_above_others and is_pointing_forward
+
+    def detect_click(self, hand_landmarks):
+        """
+        Detecta um clique baseado na movimentação do eixo z do dedo indicador.
+        """
+        index_tip = hand_landmarks.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP]
+
+        if self.last_z is not None:
+            # Detectar movimento para trás (afastar) e para frente (aproximar)
+            if self.last_z - index_tip.z > 0.02:  # Valor ajustável para sensibilidade
+                print("Clique detectado!")
+                pyautogui.click()
+
+        # Atualizar o último valor de z
+        self.last_z = index_tip.z
 
     def move_mouse(self, hand_landmarks, frame):
         """
