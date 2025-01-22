@@ -1,3 +1,0 @@
-### Documentação seguida:
-
-### Funções:
