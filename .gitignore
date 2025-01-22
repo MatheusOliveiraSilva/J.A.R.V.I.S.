@@ -6,3 +6,5 @@ llm_utils/__pycache__/
 gitlab_tools/__pycache__/
 
 agent/__pycache__/
+
+.DS_Store
