@@ -1,0 +1,7 @@
+pyaudio
+opencv-python
+mediapipe
+SpeechRecognition
+fastapi
+uvicorn
+streamlit
