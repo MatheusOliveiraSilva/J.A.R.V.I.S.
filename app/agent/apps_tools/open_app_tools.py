@@ -49,5 +49,23 @@ def abrir_playlist_favorita() -> str:
 
     return f"Abrindo a playlist: {playlist_escolhida}"
 
-# Exemplo de uso
-abrir_playlist_favorita()
+def abrir_links(links: list) -> str:
+    """
+    Abre links no navegador padrão.
+    Args:
+        None
+    """
+    for link in links:
+        webbrowser.open(link)
+
+    return f"Abrindo a playlist: {playlist_escolhida}"
+
+def abrir_google_calendar() -> str:
+    """
+    Abre o Google Calendar no navegador padrão.
+    Args:
+        None
+    """
+    webbrowser.open("https://calendar.google.com/")
+
+    return "Abrindo o Google Calendar..."

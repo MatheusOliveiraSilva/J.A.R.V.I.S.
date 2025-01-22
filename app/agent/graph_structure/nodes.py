@@ -1,7 +1,7 @@
 import app.agent.graph_structure.prompts as prompts
 import langchain
 from dotenv import load_dotenv
-from llm_utils.langchain_utils import get_llm
+from app.agent.llm_utils.langchain_utils import get_llm
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 from langgraph.graph import MessagesState
