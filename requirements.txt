@@ -1,6 +1,12 @@
+pyaudio
+opencv-python
+mediapipe
+SpeechRecognition
+fastapi
+uvicorn
+streamlit
 python-gitlab
 python-dotenv
-unicode
 pandas
 numpy
 pydantic==2.7.4

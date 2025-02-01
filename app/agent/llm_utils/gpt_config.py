@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path="../../.env")
 
 AZURE_OPENAI_BASE_URL = "https://azure-openai-danke.openai.azure.com/openai"
 

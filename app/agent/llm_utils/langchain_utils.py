@@ -8,7 +8,7 @@ from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain.chains import LLMChain
 import time
 import faiss
-import llm_utils.gpt_config as gptconfig
+import app.agent.llm_utils.gpt_config as gptconfig
 
 def get_llm(temperature=0, max_tokens=400, n=1, model_kwargs={}, model=gptconfig.MODEL_4O):
     llm = AzureChatOpenAI(
@@ -20,7 +20,6 @@ def get_llm(temperature=0, max_tokens=400, n=1, model_kwargs={}, model=gptconfig
 
         openai_api_key=gptconfig.OPENAI_API_KEY,
         openai_api_version=gptconfig.OPENAI_API_VERSION,
-        # azure_endpoint=config['OPENAI']['OPENAI_API_BASE'],
         openai_api_base=gptconfig.AZURE_OPENAI_BASE_URL
     )
 
@@ -32,16 +31,9 @@ def get_embeddings_model(model=gptconfig.MODEL_EMBEDDING):
         model=model,
         openai_api_key=gptconfig.OPENAI_API_KEY,
         openai_api_version=gptconfig.OPENAI_API_VERSION,
-        # azure_endpoint=config['OPENAI']['OPENAI_API_BASE'],
         openai_api_base=gptconfig.AZURE_OPENAI_BASE_URL
     )
     return embeddings
-
-
-# def get_llm(temperature=0, max_tokens=50, n=1, model="gpt-3.5-turbo"):
-#     apikey = os.environ["OPENAI_API_KEY"]
-#     openai.api_key = apikey
-#     return ChatOpenAI(temperature=temperature, model=model, max_tokens=max_tokens, n=n)
 
 def get_embeddings(text, model=gptconfig.MODEL_EMBEDDING, delay=None):
     embeddings = get_embeddings_model(model=model)

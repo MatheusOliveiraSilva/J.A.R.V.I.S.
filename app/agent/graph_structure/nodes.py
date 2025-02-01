@@ -1,14 +1,14 @@
-import agent.prompts as prompts
+import app.agent.graph_structure.prompts as prompts
 import langchain
 from dotenv import load_dotenv
-from llm_utils.langchain_utils import get_llm
+from app.agent.llm_utils.langchain_utils import get_llm
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 from langgraph.graph import MessagesState
 from langchain_core.messages import SystemMessage
-from agent.tools import TOOLS
+from app.agent.graph_structure.tools import TOOLS
 
-load_dotenv()
+load_dotenv(dotenv_path="../../../.env")
 llm = get_llm()
 
 def assistant(state: MessagesState):
