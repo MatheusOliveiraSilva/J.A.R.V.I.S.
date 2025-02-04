@@ -5,3 +5,6 @@ pvcobra
 pvporcupine
 sounddevice
 numpy
+SpeechRecognition
+pyaudio
+pyttsx3
