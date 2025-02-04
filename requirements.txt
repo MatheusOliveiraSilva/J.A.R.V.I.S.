@@ -8,3 +8,14 @@ numpy
 SpeechRecognition
 pyaudio
 pyttsx3
+gtts
+playsound
+SpeechRecognition
+python-gitlab
+pandas
+langchain_openai
+langchain_community
+langchain_core
+langgraph
+langchain
+faiss-cpu
