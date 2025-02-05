@@ -101,33 +101,12 @@ class FlupsAssistant:
         AppHelper.callAfter(self.feedback_item.setTitle_, "⚙️ Processando...")
         response = f"Comando recebido: {command}"
 
-        agent_call_response = JARVIS_AGENT.invoke(
+        JARVIS_AGENT.invoke(
             {"messages": [
                 HumanMessage(content=command)
             ]},
             {"configurable": {"thread_id": '1'}}
         )
-
-        speak(agent_call_response["messages"][-1].content)
-
-    def speak(self, text):
-        def _speak():
-            print(f"[DEBUG] Iniciando fala: '{text}'")
-            AppHelper.callAfter(self.feedback_item.setTitle_, "🗣️ Falando...")
-
-            # Gera o áudio usando a nova API do ElevenLabs
-            audio = client.text_to_speech.convert(
-                text=text,
-                voice_id="JBFqnCBsd6RMkjVDRZzb",  # Substitua pelo ID da voz desejada
-                model_id="eleven_multilingual_v2",  # Modelo multilíngue
-                output_format="mp3_44100_128",  # Formato de saída
-            )
-
-            play(audio)  # Reproduz o áudio
-            print("[DEBUG] Fala concluída")
-            AppHelper.callAfter(self.reset_to_ready)
-
-        threading.Thread(target=_speak, daemon=True).start()
 
     def reset_to_ready(self):
         self.is_processing = False

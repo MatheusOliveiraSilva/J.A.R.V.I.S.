@@ -1,7 +1,9 @@
 import subprocess
 import random
 import webbrowser
-from src.audio.elevenlabs_utils import speak
+from src.audio.elevenlabs_utils import ElevenLabsUtils
+
+elevenlabs_utils = ElevenLabsUtils(dotenv_path="../../../.env")
 
 def abrir_ambiente_desenvolvimento() -> str:
     """
@@ -24,8 +26,9 @@ def abrir_ambiente_desenvolvimento() -> str:
             subprocess.run(["open", caminho])
             print(f"{nome} foi iniciado com sucesso.")
 
-        speak("Todos os aplicativos do seu setup de desenvolvimento foram iniciados com sucesso! Posso ajudar em mais alguma coisa?")
+        elevenlabs_utils.play_message("Todos os aplicativos do seu setup de desenvolvimento foram iniciados com sucesso! Posso ajudar em mais alguma coisa?")
 
+        return "Todos os aplicativos foram abertos com sucesso."
     except Exception as e:
         print(f"Erro ao abrir os aplicativos: {e}")
 
@@ -37,19 +40,23 @@ def abrir_playlist_favorita() -> str:
     """
 
     # Lista de links para playlists
-    playlists = [
-        "https://www.youtube.com/watch?v=GlmwkPdkaN4",
-        "https://www.youtube.com/watch?v=jfKfPfyJRdk",
-        "https://www.youtube.com/watch?v=DFuFDdL9sl4&t=58s"
-    ]
+    playlists = {
+        "https://www.youtube.com/watch?v=GlmwkPdkaN4": "Creativity Playlist",
+        "https://www.youtube.com/watch?v=jfKfPfyJRdk": "Lofi Hip Hop Playlist",
+        "https://www.youtube.com/watch?v=DFuFDdL9sl4&t=58s": "Quiet 4:00 AM Playlist"
+    }
 
     # Escolher aleatoriamente uma playlist
-    playlist_escolhida = random.choice(playlists)
+    playlist_escolhida = random.choice(list(playlists.keys()))
 
     # Abrir a playlist no navegador padrão
     webbrowser.open(playlist_escolhida)
 
-    return f"Abrindo a playlist: {playlist_escolhida}"
+    msg = f"Abri {playlists[playlist_escolhida]} para você!"
+
+    elevenlabs_utils.play_message(msg)
+
+    return f"Playlist aberta: {playlists[playlist_escolhida]}"
 
 def abrir_links(links: list) -> str:
     """
@@ -60,7 +67,8 @@ def abrir_links(links: list) -> str:
     for link in links:
         webbrowser.open(link)
 
-    return f"Abrindo a playlist: {playlist_escolhida}"
+    elevenlabs_utils.play_message("Pronto, abri o link como pedido.")
+    return f"Link aberto com sucesso!"
 
 def abrir_google_calendar() -> str:
     """
@@ -70,7 +78,8 @@ def abrir_google_calendar() -> str:
     """
     webbrowser.open("https://calendar.google.com/")
 
-    return "Abrindo o Google Calendar..."
+    elevenlabs_utils.play_message("Aqui está! Deseja fazer algo nesse google calendário?")
+    return "Aqui está! Deseja fazer algo nesse google calendário?"
 
 def fechar_ambiente_desenvolvimento() -> str:
     """
@@ -87,7 +96,10 @@ def fechar_ambiente_desenvolvimento() -> str:
             subprocess.run(["osascript", "-e", f'tell application "{app}" to quit'])
             print(f"{app} foi encerrado com sucesso.")
 
+        elevenlabs_utils.play_message("Pronto, fechei seu ambiente de desenvolvimento! Seu dia de trabalho foi cansativo?")
         return "Todos os aplicativos foram fechados com sucesso."
     except Exception as e:
         print(f"Erro ao fechar os aplicativos: {e}")
 
+if __name__ == "__main__":
+    print(abrir_playlist_favorita())
