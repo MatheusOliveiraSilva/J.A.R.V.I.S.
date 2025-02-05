@@ -1,6 +1,7 @@
 import subprocess
 import random
 import webbrowser
+from src.audio.elevenlabs_utils import speak
 
 def abrir_ambiente_desenvolvimento() -> str:
     """
@@ -23,7 +24,8 @@ def abrir_ambiente_desenvolvimento() -> str:
             subprocess.run(["open", caminho])
             print(f"{nome} foi iniciado com sucesso.")
 
-        return "Todos os aplicativos foram iniciados com sucesso."
+        speak("Todos os aplicativos do seu setup de desenvolvimento foram iniciados com sucesso! Posso ajudar em mais alguma coisa?")
+
     except Exception as e:
         print(f"Erro ao abrir os aplicativos: {e}")
 

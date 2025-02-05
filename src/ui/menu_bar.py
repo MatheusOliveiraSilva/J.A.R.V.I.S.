@@ -5,17 +5,14 @@ import numpy as np
 import sounddevice as sd
 import pvporcupine
 import speech_recognition as sr
-from elevenlabs.client import ElevenLabs
-from elevenlabs import play
+from src.audio import elevenlabs_utils
+from src.agent.jarvis import graph as JARVIS_AGENT
+from langchain_core.messages import HumanMessage
 from Cocoa import NSApplication, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength
 from PyObjCTools import AppHelper
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="../../.env")
-
-# Inicializa o cliente do ElevenLabs
-client = ElevenLabs(api_key=os.getenv("ELEVENLABS_ACESS_KEY"))
-
 
 class FlupsAssistant:
     def __init__(self):
@@ -103,7 +100,15 @@ class FlupsAssistant:
         print(f"[DEBUG] Processando comando: {command}")
         AppHelper.callAfter(self.feedback_item.setTitle_, "⚙️ Processando...")
         response = f"Comando recebido: {command}"
-        self.speak(response)
+
+        agent_call_response = JARVIS_AGENT.invoke(
+            {"messages": [
+                HumanMessage(content=command)
+            ]},
+            {"configurable": {"thread_id": '1'}}
+        )
+
+        speak(agent_call_response["messages"][-1].content)
 
     def speak(self, text):
         def _speak():
