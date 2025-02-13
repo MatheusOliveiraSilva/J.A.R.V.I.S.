@@ -25,7 +25,7 @@ class FlupsAssistant:
         self.feedback_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔵 Pronto", None, "")
         self.menu.addItem_(self.feedback_item)
         self.status_item.setMenu_(self.menu)
-        self.status_item.setTitle_("Flups")
+        self.status_item.setTitle_("Jarvis")
 
         # Configurações de áudio
         self.mic_device_index = 4  # Índice fixo para MacBook Pro Microphone
@@ -69,6 +69,7 @@ class FlupsAssistant:
             self.is_processing = True
             print("[DEBUG] Iniciando modo de escuta...")
             AppHelper.callAfter(self.feedback_item.setTitle_, "🎤 Escutando...")
+            self.status_item.setTitle_("🎤 Escutando...")
             threading.Thread(target=self.listen_and_process, daemon=True).start()
 
     def listen_and_process(self):
@@ -91,14 +92,15 @@ class FlupsAssistant:
                 self.process_command(text)
         except sr.WaitTimeoutError:
             print("[DEBUG] Timeout: Nenhum comando detectado")
-            AppHelper.callAfter(self.reset_to_ready)
         except Exception as e:
             print(f"[DEBUG] Erro na captura: {str(e)}")
+        finally:
             AppHelper.callAfter(self.reset_to_ready)
 
     def process_command(self, command):
         print(f"[DEBUG] Processando comando: {command}")
         AppHelper.callAfter(self.feedback_item.setTitle_, "⚙️ Processando...")
+        self.status_item.setTitle_("⚙️ Processando...")
         response = f"Comando recebido: {command}"
 
         JARVIS_AGENT.invoke(
@@ -108,11 +110,16 @@ class FlupsAssistant:
             {"configurable": {"thread_id": '1'}}
         )
 
+        # Resetar o estado após o processamento
+        AppHelper.callAfter(self.reset_to_ready)
+
     def reset_to_ready(self):
         self.is_processing = False
         print("[DEBUG] Resetando para estado pronto")
-        AppHelper.callAfter(self.feedback_item.setTitle_, "🔵 Pronto")
+        AppHelper.callAfter(self.feedback_item.setTitle_, "Jarvis")
+        self.status_item.setTitle_("Jarvis")
 
+        self.start_audio_stream()
 
 if __name__ == "__main__":
     assistant = FlupsAssistant()
