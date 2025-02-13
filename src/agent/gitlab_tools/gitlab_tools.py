@@ -22,11 +22,12 @@ def get_opened_issues() -> str:
         return "Nenhuma issue aberta no momento."
 
     for issue in issues:
-        relatorio += f"ID da tarefa: {issue.iid}\n"
+        # relatorio += f"ID da tarefa: {issue.iid}\n"
         relatorio += f"Título: {issue.title}\n"
-        relatorio += f"Descrição: {issue.description}\n"
+        # relatorio += f"Descrição: {issue.description}\n"
         relatorio += "----------------------------------------\n"
 
+    print(relatorio)
     return relatorio
 
 def issue_spent_time(issue_id: int, spent_time: str) -> str:

@@ -21,9 +21,7 @@ graph = builder.compile(checkpointer=memory)
 if __name__ == "__main__":
     config = {"configurable": {"thread_id": '1'}}
 
-    messages = [HumanMessage(
-        content="pesquisa pra mim no google como fazer bolo")
-    ]
+    messages = [HumanMessage(content="abre o calendario pra mim")]
 
     result = graph.invoke({"messages": messages}, config)
 

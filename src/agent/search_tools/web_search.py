@@ -18,26 +18,6 @@ search_tool = TavilySearchResults(
     include_images=True,
 )
 
-SUMMARY_PROMPT = """
-Você recebeu informações de várias fontes para responder a seguinte pergunta: {query}.
-Use as informações fornecidas para criar um resumo coeso e claro.
-Inclua links relevantes no final para referência.
-
-Informações:
-{documents}
-
-Formato esperado de output:
-------
-Resumo:
-< Resumo >
-Referências:
-< links relevantes >
-------
-
-Por favor, forneça um resumo e referências para a pergunta abaixo:
-{query}
-"""
-
 def web_search(query: str) -> str:
     """
     Search the web for information on the given query.
@@ -51,13 +31,6 @@ def web_search(query: str) -> str:
         f"Content: {result['content']}\n\nReference URL: {result['url']}" for result in search_results
     ])
 
-    prompt = SUMMARY_PROMPT.format(
-        query=query,
-        documents=documents_string
-    )
-
-    chain = llm | StrOutputParser()
-
-    response = chain.invoke([HumanMessage(prompt)])
+    response = "Abaixo está o resultado da busca na web: \n" + documents_string
 
     return response

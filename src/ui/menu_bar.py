@@ -5,6 +5,7 @@ import numpy as np
 import sounddevice as sd
 import pvporcupine
 import speech_recognition as sr
+import time
 from src.audio import elevenlabs_utils
 from src.agent.jarvis import graph as JARVIS_AGENT
 from langchain_core.messages import HumanMessage
@@ -29,7 +30,7 @@ class FlupsAssistant:
         self.status_item.setTitle_("Jarvis")
 
         # Configurações de áudio
-        self.mic_device_index = 4  # Índice fixo para MacBook Pro Microphone
+        self.mic_device_index = self.get_macbook_microphone_index()
         self.mic_name = sr.Microphone.list_microphone_names()[self.mic_device_index]
         print(f"[DEBUG] Microfone selecionado: {self.mic_name} (índice {self.mic_device_index})")
 
@@ -43,6 +44,13 @@ class FlupsAssistant:
 
         # Inicia stream de áudio
         self.start_audio_stream()
+
+    def get_macbook_microphone_index(self):
+        mic_list = sr.Microphone.list_microphone_names()
+        for index, name in enumerate(mic_list):
+            if "MacBook" in name or "Internal Microphone" in name:
+                return index
+        raise RuntimeError("Microfone do MacBook não encontrado")
 
     def start_audio_stream(self):
         self.stream = sd.InputStream(
@@ -99,7 +107,7 @@ class FlupsAssistant:
         except Exception as e:
             print(f"[DEBUG] Erro na captura: {str(e)}")
         finally:
-            self.reset_to_ready()
+            self.wait_for_additional_input()
 
     def process_command(self, command):
         print(f"[DEBUG] Processando comando: {command}")
@@ -113,7 +121,10 @@ class FlupsAssistant:
             {"configurable": {"thread_id": '1'}}
         )
 
-        # Removida a chamada desnecessária para reset_to_ready()
+    def wait_for_additional_input(self):
+        print("[DEBUG] Aguardando por entrada adicional...")
+        time.sleep(5)  # Aguarda 5 segundos antes de resetar para pronto
+        self.reset_to_ready()
 
     def reset_to_ready(self):
         self.is_processing = False

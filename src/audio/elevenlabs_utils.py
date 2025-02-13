@@ -16,7 +16,8 @@ class ElevenLabsUtils:
         audio = self.client.text_to_speech.convert(
             text=message,
             voice_id="JBFqnCBsd6RMkjVDRZzb",  # Substitua pelo ID da voz desejada
-            model_id="eleven_multilingual_v2",  # Modelo multilíngue
+            #model_id="eleven_multilingual_v2",  # Modelo multilíngue
+            model_id="eleven_flash_v2_5",  # Modelo real-time
             output_format="mp3_44100_128",  # Formato de saída
         )
 

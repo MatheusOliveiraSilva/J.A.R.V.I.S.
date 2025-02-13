@@ -7,13 +7,15 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import MessagesState
 from langchain_core.messages import SystemMessage
 from src.agent.graph_structure.tools import TOOLS
+from src.audio.elevenlabs_utils import ElevenLabsUtils
 
 load_dotenv(dotenv_path="../../../.env")
 llm = get_llm()
+elevenlabs_utils = ElevenLabsUtils()
 
 def assistant(state: MessagesState):
     """
-    This function representes the single node on graph, is a ReAct assistant.
+    This function represents the assistant node on graph, is a ReAct assistant.
     """
 
     llm_with_tools = llm.bind_tools(TOOLS)
@@ -22,4 +24,10 @@ def assistant(state: MessagesState):
         content=prompts.ASSISTANT_PROMPT.format(input=state["messages"][-1].content)
     )
 
-    return {"messages": [llm_with_tools.invoke([sys_msg] + state["messages"])]}
+    result = llm_with_tools.invoke([sys_msg] + state["messages"])
+
+    last_msg = result.content
+
+    elevenlabs_utils.play_message(last_msg)
+
+    return {"messages": [result]}

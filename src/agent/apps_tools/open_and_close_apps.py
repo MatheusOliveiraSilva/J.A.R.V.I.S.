@@ -1,9 +1,6 @@
 import subprocess
 import random
 import webbrowser
-from src.audio.elevenlabs_utils import ElevenLabsUtils
-
-elevenlabs_utils = ElevenLabsUtils(dotenv_path="../../../.env")
 
 def abrir_ambiente_desenvolvimento() -> str:
     """
@@ -26,9 +23,7 @@ def abrir_ambiente_desenvolvimento() -> str:
             subprocess.run(["open", caminho])
             print(f"{nome} foi iniciado com sucesso.")
 
-        elevenlabs_utils.play_message("Todos os aplicativos do seu setup de desenvolvimento foram iniciados com sucesso! Posso ajudar em mais alguma coisa?")
-
-        return "Todos os aplicativos foram abertos com sucesso."
+        return "Todos os aplicativos do seu setup de desenvolvimento foram iniciados com sucesso! Posso ajudar em mais alguma coisa?"
     except Exception as e:
         print(f"Erro ao abrir os aplicativos: {e}")
 
@@ -52,11 +47,7 @@ def abrir_playlist_favorita() -> str:
     # Abrir a playlist no navegador padrão
     webbrowser.open(playlist_escolhida)
 
-    msg = f"Abri {playlists[playlist_escolhida]} para você!"
-
-    # elevenlabs_utils.play_message(msg) # not cool for UX this play while song is playing.
-
-    return f"Playlist aberta: {playlists[playlist_escolhida]}"
+    return f"Abri {playlists[playlist_escolhida]} para você!"
 
 def abrir_links(links: list) -> str:
     """
@@ -67,8 +58,7 @@ def abrir_links(links: list) -> str:
     for link in links:
         webbrowser.open(link)
 
-    elevenlabs_utils.play_message("Pronto, abri o link como pedido.")
-    return f"Link aberto com sucesso!"
+    return "Pronto, abri o link como pedido."
 
 def abrir_google_calendar() -> str:
     """
@@ -78,7 +68,6 @@ def abrir_google_calendar() -> str:
     """
     webbrowser.open("https://calendar.google.com/")
 
-    elevenlabs_utils.play_message("Aqui está! Deseja fazer algo nesse google calendário?")
     return "Aqui está! Deseja fazer algo nesse google calendário?"
 
 def fechar_ambiente_desenvolvimento() -> str:
@@ -96,8 +85,7 @@ def fechar_ambiente_desenvolvimento() -> str:
             subprocess.run(["osascript", "-e", f'tell application "{app}" to quit'])
             print(f"{app} foi encerrado com sucesso.")
 
-        elevenlabs_utils.play_message("Pronto, fechei seu ambiente de desenvolvimento! Seu dia de trabalho foi cansativo?")
-        return "Todos os aplicativos foram fechados com sucesso."
+        return "Pronto, fechei seu ambiente de desenvolvimento! Seu dia de trabalho foi cansativo?"
     except Exception as e:
         print(f"Erro ao fechar os aplicativos: {e}")
 
