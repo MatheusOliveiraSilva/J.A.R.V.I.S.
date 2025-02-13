@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="../../.env")
 
+
 class FlupsAssistant:
     def __init__(self):
         self.app = NSApplication.sharedApplication()
@@ -34,7 +35,8 @@ class FlupsAssistant:
 
         self.porcupine = pvporcupine.create(
             access_key=os.getenv("PV_ACCESS_KEY"),
-            keywords=["jarvis"]
+            keywords=["jarvis"],
+            sensitivities=[0.6]  # Sensibilidade ajustável
         )
         self.recognizer = sr.Recognizer()
         self.is_processing = False
@@ -69,14 +71,14 @@ class FlupsAssistant:
             self.is_processing = True
             print("[DEBUG] Iniciando modo de escuta...")
             AppHelper.callAfter(self.feedback_item.setTitle_, "🎤 Escutando...")
-            self.status_item.setTitle_("🎤 Escutando...")
+            AppHelper.callAfter(self.status_item.setTitle_, "🎤 Escutando...")
             threading.Thread(target=self.listen_and_process, daemon=True).start()
 
     def listen_and_process(self):
         try:
             with sr.Microphone(device_index=self.mic_device_index) as source:
                 print("[DEBUG] Ajustando para ruído ambiente...")
-                self.recognizer.adjust_for_ambient_noise(source)
+                self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
                 print("[DEBUG] Gravando áudio...")
 
                 # Configurações de tempo de escuta
@@ -92,16 +94,17 @@ class FlupsAssistant:
                 self.process_command(text)
         except sr.WaitTimeoutError:
             print("[DEBUG] Timeout: Nenhum comando detectado")
+        except sr.UnknownValueError:
+            print("[DEBUG] Não foi possível entender o áudio")
         except Exception as e:
             print(f"[DEBUG] Erro na captura: {str(e)}")
         finally:
-            AppHelper.callAfter(self.reset_to_ready)
+            self.reset_to_ready()
 
     def process_command(self, command):
         print(f"[DEBUG] Processando comando: {command}")
         AppHelper.callAfter(self.feedback_item.setTitle_, "⚙️ Processando...")
-        self.status_item.setTitle_("⚙️ Processando...")
-        response = f"Comando recebido: {command}"
+        AppHelper.callAfter(self.status_item.setTitle_, "⚙️ Processando...")
 
         JARVIS_AGENT.invoke(
             {"messages": [
@@ -110,16 +113,18 @@ class FlupsAssistant:
             {"configurable": {"thread_id": '1'}}
         )
 
-        # Resetar o estado após o processamento
-        AppHelper.callAfter(self.reset_to_ready)
+        # Removida a chamada desnecessária para reset_to_ready()
 
     def reset_to_ready(self):
         self.is_processing = False
         print("[DEBUG] Resetando para estado pronto")
-        AppHelper.callAfter(self.feedback_item.setTitle_, "Jarvis")
-        self.status_item.setTitle_("Jarvis")
+
+        # Garantir atualização na thread principal
+        AppHelper.callAfter(self.feedback_item.setTitle_, "🔵 Pronto")
+        AppHelper.callAfter(self.status_item.setTitle_, "Jarvis")
 
         self.start_audio_stream()
+
 
 if __name__ == "__main__":
     assistant = FlupsAssistant()

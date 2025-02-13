@@ -54,7 +54,7 @@ def abrir_playlist_favorita() -> str:
 
     msg = f"Abri {playlists[playlist_escolhida]} para você!"
 
-    elevenlabs_utils.play_message(msg)
+    # elevenlabs_utils.play_message(msg) # not cool for UX this play while song is playing.
 
     return f"Playlist aberta: {playlists[playlist_escolhida]}"
 
